@@ -26,21 +26,22 @@ public class MoveState : GroundState
 
     public override void FixedUpdate()
     {
+        base.FixedUpdate();
         player.AddForce(speedForce, ForceMode.Acceleration);
     }
 
     public override void LateUpdate()
     {
-        
+        base.LateUpdate();
     }
 
     public override void Update()
     {
+        base.Update();
         if(playerInput.MovementVector == Vector3.zero)
         {
             stateMachine.ChangeState(player.IdleState);
         }
-        player.SetAnimtionFloat("speed", player.GetCurrentSpeed().magnitude);
         CalculateMoveSpeed();
     }
 

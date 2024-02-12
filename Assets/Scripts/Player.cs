@@ -21,10 +21,12 @@ public class Player : MonoBehaviour, IStateOwner
 
     //General properties
     public bool isGrounded { get; private set; }
+    public bool isFalling { get; private set; }
 
     //States properties
     public IdleState IdleState { get; private set; }
     public MoveState MoveState { get; private set; }
+    public AirState AirState { get; private set; }
 
     //Private fields
     private StateMachine stateMachine;
@@ -38,11 +40,14 @@ public class Player : MonoBehaviour, IStateOwner
 
         IdleState = new IdleState(stateDependencies);
         MoveState = new MoveState(stateDependencies);
+        AirState = new AirState(stateDependencies);
     }
     // Start is called before the first frame update
     private void Start()
     {
         stateMachine.SetInitState(IdleState);
+
+        MessageBroker.Instance.Subscribe(MessageEventName.ON_JUMP, LeaveTheGround);
     }
 
     // Update is called once per frame
@@ -50,15 +55,15 @@ public class Player : MonoBehaviour, IStateOwner
     {
         stateMachine.Update();
         LookAtDirection();
-        GroundCheck();
-
-        Debug.Log(isGrounded);
     }
 
     private void FixedUpdate()
     {
-        Float();
         stateMachine.FixedUpdate();
+        if (isGrounded)
+        {
+            Float();
+        }
     }
 
     private void LateUpdate()
@@ -99,17 +104,17 @@ public class Player : MonoBehaviour, IStateOwner
         playerAC.SetBool(animName, doPlay);
     }
 
-    public void SetAnimtionFloat(string animName, float value)
+    public void SetAnimationFloat(string animName, float value)
     {
         playerAC.SetFloat(animName, value);
     }
 
-    private void GroundCheck()
+    public void GroundCheck()
     {
         isGrounded = Physics.CheckSphere(groundCheckPosition.position, groundCheckRadius, groundLayer);
     }
 
-    private void Float()
+    public void Float()
     {
         Vector3 capsuleColliderCenterInWorldSpace = capsuleCollider.bounds.center;
         Ray downwardRayFromCapsuleCenter = new Ray(capsuleColliderCenterInWorldSpace, Vector3.down);
@@ -128,6 +133,11 @@ public class Player : MonoBehaviour, IStateOwner
 
             playerRb.AddForce(liftingForce, ForceMode.VelocityChange);
         }
+    }
+
+    private void LeaveTheGround(object eventData)
+    {
+        isGrounded = false;
     }
 
     private void OnDrawGizmos()

@@ -20,6 +20,10 @@ public class PlayerInput : MonoBehaviour
 
         playerControls.Player.Move.performed += Move;
         playerControls.Player.Move.canceled += Move;
+
+        playerControls.Player.Jump.started += Jump;
+        playerControls.Player.Jump.canceled += Jump;
+
     }
 
     private void OnDisable()
@@ -28,6 +32,9 @@ public class PlayerInput : MonoBehaviour
 
         playerControls.Player.Move.performed -= Move;
         playerControls.Player.Move.canceled -= Move;
+
+        playerControls.Player.Jump.started -= Jump;
+        playerControls.Player.Jump.canceled -= Jump;
     }
 
     private void Update()
@@ -55,5 +62,13 @@ public class PlayerInput : MonoBehaviour
         Vector3 movementDirection = (cameraForward * movementInput.y) + (cameraRight * movementInput.x);
         movementDirection.y = 0f; // Ensure the movement stays in the horizontal plane
         MovementVector = movementDirection.normalized;
+    }
+
+    private void Jump(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+            MessageBroker.Instance.Publish(MessageEventName.ON_JUMP, true);
+        }
     }
 }
