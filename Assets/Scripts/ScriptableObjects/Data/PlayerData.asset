@@ -16,3 +16,4 @@ MonoBehaviour:
   speedAccel: 7
   speedDecel: 10
   rotationDuration: 0.3
+  jumpForce: 10

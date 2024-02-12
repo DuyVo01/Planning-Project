@@ -25,16 +25,18 @@ public class IdleState : GroundState
 
     public override void FixedUpdate()
     {
+        base.FixedUpdate();
         player.AddForce(stopForce, ForceMode.Acceleration);
     }
 
     public override void LateUpdate()
     {
-        
+        base.LateUpdate();
     }
 
     public override void Update()
     {
+        base.Update();
         if(playerInput.MovementVector != Vector3.zero)
         {
             stateMachine.ChangeState(player.MoveState);

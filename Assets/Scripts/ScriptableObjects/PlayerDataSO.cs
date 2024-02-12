@@ -10,4 +10,7 @@ public class PlayerDataSO : ScriptableObject
     public float speedAccel;
     public float speedDecel;
     public float rotationDuration;
+
+    [Header("Jump parameters")]
+    public float jumpForce;
 }
