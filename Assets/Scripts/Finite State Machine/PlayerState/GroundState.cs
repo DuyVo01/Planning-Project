@@ -25,6 +25,10 @@ public class GroundState : PlayerBaseState
     public override void FixedUpdate()
     {
         base.FixedUpdate();
+        if (!isJumping)
+        {
+            player.Float();
+        }
     }
 
     public override void LateUpdate()
@@ -47,10 +51,12 @@ public class GroundState : PlayerBaseState
 
     public void Jump(object doJump)
     {
-        if (!isActiveState)
+        if (!isActiveState || !player.isGrounded)
         {
             return;
         }
+
+        player.OverrideVelocity(Vector3.zero);
 
         player.AddForce(new Vector3(0, playerData.jumpForce, 0), ForceMode.Impulse);
         isJumping = true;

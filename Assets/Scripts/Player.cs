@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour, IStateOwner
@@ -26,6 +27,7 @@ public class Player : MonoBehaviour, IStateOwner
     //States properties
     public IdleState IdleState { get; private set; }
     public MoveState MoveState { get; private set; }
+    public LandState LandState { get; private set; }
     public AirState AirState { get; private set; }
 
     //Private fields
@@ -40,12 +42,15 @@ public class Player : MonoBehaviour, IStateOwner
 
         IdleState = new IdleState(stateDependencies);
         MoveState = new MoveState(stateDependencies);
+        LandState = new LandState(stateDependencies);
         AirState = new AirState(stateDependencies);
     }
     // Start is called before the first frame update
     private void Start()
     {
         stateMachine.SetInitState(IdleState);
+
+        playerRb.useGravity = false;
 
         MessageBroker.Instance.Subscribe(MessageEventName.ON_JUMP, LeaveTheGround);
     }
@@ -60,10 +65,6 @@ public class Player : MonoBehaviour, IStateOwner
     private void FixedUpdate()
     {
         stateMachine.FixedUpdate();
-        if (isGrounded)
-        {
-            Float();
-        }
     }
 
     private void LateUpdate()
@@ -92,6 +93,11 @@ public class Player : MonoBehaviour, IStateOwner
     public Vector3 GetCurrentSpeed()
     {
         return playerRb.velocity;
+    }
+
+    public void OverrideVelocity(Vector3 newVelocity)
+    {
+        playerRb.velocity = newVelocity;
     }
 
     public void AddForce(Vector3 force, ForceMode forceMode)
@@ -140,6 +146,12 @@ public class Player : MonoBehaviour, IStateOwner
         isGrounded = false;
     }
 
+    public void ApplyGravity()
+    {
+        Vector3 gravity = new Vector3(0, Physics.gravity.y * stateDependencies.PlayerData.gravityScale, 0);
+        playerRb.AddForce(gravity, ForceMode.Force);
+    }
+
     private void OnDrawGizmos()
     {
         capsuleCollider = GetComponent<CapsuleCollider>();
@@ -153,4 +165,6 @@ public class Player : MonoBehaviour, IStateOwner
         Gizmos.color = Color.black;
         Gizmos.DrawWireSphere(groundCheckPosition.position, groundCheckRadius);
     }
+
+
 }

@@ -4,30 +4,41 @@ using UnityEngine;
 
 public class AirState : PlayerBaseState
 {
-    private bool toGround;
     public AirState(StateDependencies stateDependencies) : base(stateDependencies)
     {
-        ANIM = "jumpUp";
-        MessageBroker.Instance.Subscribe(MessageEventName.ON_LANDING_END, DonePlayingLandingAnim);
+        MessageBroker.Instance.Subscribe(MessageEventName.ON_JUMP_ANIM_END, DonePlayingJumpAnim);
     }
 
     public override void Enter()
     {
         base.Enter();
-        toGround = false;
-        player.SetAnimationBool(ANIM, true);
 
+        player.SetAnimationBool(AnimationParameter.INAIR, true);
+
+
+        if (player.GetCurrentSpeed().y >= 1)
+        {
+            player.SetAnimationBool(AnimationParameter.JUMP_UP, true);
+        }
+        else
+        {
+            player.SetAnimationBool(AnimationParameter.FALLING, true);
+        }
     }
 
     public override void Exit()
     {
         base.Exit();
-        player.SetAnimationBool(ANIM, false);
+        player.SetAnimationBool(AnimationParameter.JUMP_UP, false);
+        player.SetAnimationBool(AnimationParameter.FALLING, false);
+        player.SetAnimationBool(AnimationParameter.INAIR, false);
+
     }
 
     public override void FixedUpdate()
     {
         base.FixedUpdate();
+        player.ApplyGravity();
     }
 
     public override void LateUpdate()
@@ -39,28 +50,21 @@ public class AirState : PlayerBaseState
     {
         base.Update();
 
-        if(player.GetCurrentSpeed().y < 0)
+        if (player.GetCurrentSpeed().y < 1)
         {
             player.GroundCheck();
         }
 
         if (player.isGrounded)
         {
-            if(playerInput.MovementVector != Vector3.zero)
-            {
-                stateMachine.ChangeState(player.IdleState);
-            }
-            else if (toGround)
-            {
-                stateMachine.ChangeState(player.IdleState);
-            }
+            stateMachine.ChangeState(player.LandState);
         }
-
-        player.SetAnimationFloat("yVelocity", player.GetCurrentSpeed().y);
     }
 
-    private void DonePlayingLandingAnim(object eventData)
+    private void DonePlayingJumpAnim(object eventData)
     {
-        toGround = true;
+        player.SetAnimationBool(AnimationParameter.JUMP_UP, false);
+
+        player.SetAnimationBool(AnimationParameter.FALLING, true);
     }
 }
