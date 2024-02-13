@@ -8,19 +8,19 @@ public class IdleState : GroundState
 
     public IdleState(StateDependencies stateDependencies) : base(stateDependencies)
     {
-        ANIM = "isIdling";
+        
     }
 
     public override void Enter()
     {
         base.Enter();
-        player.SetAnimationBool(ANIM, true);
+        player.SetAnimationBool(AnimationParameter.IDLE, true);
     }
 
     public override void Exit()
     {
         base.Exit();
-        player.SetAnimationBool(ANIM, false);
+        player.SetAnimationBool(AnimationParameter.IDLE, false);
     }
 
     public override void FixedUpdate()
@@ -50,9 +50,9 @@ public class IdleState : GroundState
 
     private void EliminateRemainingSpeed()
     {
-        Vector3 targetSpeedVector = playerInput.MovementVector * playerData.moveSpeed;
+        Vector3 targetSpeedVector = playerInput.MovementVector * playerData.maxRunSpeed;
         Vector3 neededForce = targetSpeedVector - player.GetCurrentSpeed();
 
-        stopForce = neededForce * playerData.speedDecel;
+        stopForce = neededForce * playerData.speedDecelAmount;
     }
 }

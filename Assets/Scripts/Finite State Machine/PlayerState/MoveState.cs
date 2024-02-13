@@ -9,19 +9,19 @@ public class MoveState : GroundState
 
     public MoveState(StateDependencies stateDependencies) : base(stateDependencies)
     {
-        ANIM = "isMoving";
+        
     }
 
     public override void Enter()
     {
         base.Enter();
-        player.SetAnimationBool(ANIM, true);
+        player.SetAnimationBool(AnimationParameter.MOVE, true);
     }
 
     public override void Exit()
     {
         base.Exit();
-        player.SetAnimationBool(ANIM, false);
+        player.SetAnimationBool(AnimationParameter.MOVE, false);
     }
 
     public override void FixedUpdate()
@@ -47,10 +47,10 @@ public class MoveState : GroundState
 
     private void CalculateMoveSpeed()
     {
-        Vector3 targetSpeedVector = playerInput.MovementVector * playerData.moveSpeed;
+        Vector3 targetSpeedVector = playerInput.MovementVector * playerData.maxRunSpeed;
         Vector3 neededForce = targetSpeedVector - player.GetCurrentSpeed();
 
-        speedForce = neededForce * playerData.speedAccel;
+        speedForce = neededForce * playerData.speedAccelAmount;
     }
 
     

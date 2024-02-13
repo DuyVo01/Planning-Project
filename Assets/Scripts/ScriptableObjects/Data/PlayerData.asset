@@ -12,8 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af727e941fb061e428835baf3dbbf9bd, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
-  moveSpeed: 10
-  speedAccel: 7
-  speedDecel: 10
+  speedAccelAmount: 25
+  speedDecelAmount: 25
+  maxRunSpeed: 10
+  speedAcceleration: 5
+  speedDeceleration: 5
   rotationDuration: 0.3
-  jumpForce: 10
+  gravityScale: 2.4464831
+  jumpTimeToApex: 0.5
+  jumpHeight: 3
+  jumpForce: 12

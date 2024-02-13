@@ -57,7 +57,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.99558496
+      - time: 0.9743084
         functionName: OnLandingEnd
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 38b514ddab9d8544f84110dd191e663d, type: 3}
